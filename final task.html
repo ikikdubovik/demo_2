@@ -1,0 +1,438 @@
+<html>
+
+<head>
+	<script>
+		class Country {
+			constructor(name, racer1, racer2, racer3, racer4) {
+				this.name = name;
+				this.racer1 = racer1;
+				this.racer2 = racer2;
+				this.racer3 = racer3;
+				this.racer4 = racer4;
+			}
+		}
+		class Racer {
+			constructor(number, name, surname, rating) {
+				this.number = number;
+				this.name = name;
+				this.surname = surname;
+				this.rating = rating;
+			}
+		}
+
+		function randomName(nameList) {							// генерирация случайного имени из базы
+			let n = Math.floor(Math.random() * nameList.length);
+			return nameList[n];
+		}
+		function randomRating() {								// генерация случайного рейтинга
+			let n = Math.floor(Math.random() * (4) + 1);
+			return n;
+		}
+		function randomTime(roundCount, racersCount) {			// генерация случайного времени в секундах
+			result = [];
+			for (let i = 0; i < racersCount; i++) {
+				result[i] = [];
+				for (let j = 0; j < roundCount; j++) {
+					result[i][j] = Math.round((Math.random() * (30) + 70) / roundCount * 100) / 100;
+				}
+			}
+			return result;
+		}
+		function raserPlayList(countriesInPlay) {				// возвращает массив с данными о гонщиках, учавствующих в гонке
+			result = [];
+			for (let i = 0; i < countriesInPlay.length; i++) {
+				result.push(countriesInPlay[i].racer1);
+				result.push(countriesInPlay[i].racer2);
+				result.push(countriesInPlay[i].racer3);
+				result.push(countriesInPlay[i].racer4);
+			}
+			return result;
+		}
+		function min(massiv) {									// нахождение минимального значения в массиве
+			let min = massiv[0];
+			let minI = 0;
+			for (let i = 1; i < massiv.length; i++) {
+				if (massiv[i] < min) {
+					min = massiv[i];
+					minI = i;
+				}
+			}
+			return min;
+		}
+		function minI(massiv) {									// нахождение индекса минимального значения в массиве
+			let min = massiv[0];
+			let minI = 0;
+			for (let i = 1; i < massiv.length; i++) {
+				if (massiv[i] < min) {
+					min = massiv[i];
+					minI = i;
+				}
+			}
+			return minI;
+		}
+		function max(massiv) {									// нахождение максимального значения в массиве
+			let max = massiv[0];
+			let maxI = 0;
+			for (i = 0; i < massiv.length; i++) {
+				if (massiv[i] > max) {
+					max = massiv[i];
+					maxI = i;
+				}
+			}
+			return max;
+		}
+		function maxI(massiv) {									// нахождение индекса максимального значения в массиве
+			let max = massiv[0];
+			let maxI = 0;
+			for (i = 0; i < massiv.length; i++) {
+				if (massiv[i] > max) {
+					max = massiv[i];
+					maxI = i;
+				}
+			}
+			return maxI;
+		}
+
+		function maxTime(massiv, roundCount, countryCount) {	// нахождение максимального показателя времени в каждой из стран
+			let result = [];
+			let maxResult = [];
+			for (let i = 0; i < roundCount; i++) {
+				let save = [];
+				for (let n = 0; n < countryCount; n++) {
+					for (let j = 0; j < 4; j++) {
+						maxResult[j] = massiv[j + n * 4][i];
+					}
+					save.push(max(maxResult));
+					result[i] = [];
+				}
+				for (let k = 0; k < save.length; k++) {
+					result[i] = save.slice();
+				}
+
+			}
+			return result;
+		}
+
+		function minTime(massiv, roundCount, countryCount) {	// нахождение максимального показателя времени в каждой из стран
+			let result = [];
+			let minResult = [];
+			for (let i = 0; i < roundCount; i++) {
+				let save = [];
+				for (let n = 0; n < countryCount; n++) {
+					for (let j = 0; j < 4; j++) {
+						minResult[j] = massiv[j + n * 4][i]
+					}
+					save.push(min(minResult));
+					result[i] = [];
+				}
+				for (let k = 0; k < save.length; k++) {
+					result[i] = save.slice();
+				}
+
+			}
+			return result;
+		}
+
+		function places(massiv, roundCount) {					// возвращает массив, который "выдаёт" место по возрастанию каждому из значений
+			let result = [];
+			let save = [];
+			for (let i = 0; i < roundCount; i++) {
+				result[i] = [];
+				save = massiv[i].slice();
+				for (let j = 0; j < save.length; j++) {
+					let indexMin = minI(save);
+					result[i][indexMin] = j + 1;
+					save[indexMin] = 1000;
+				}
+			}
+			return result;
+		}
+
+		function placesSum(massiv, countryCount, roundCount) {	// возвращает массив, в котором просуммированы места, занятые на каждом этапе
+			let result = [];
+			for (i = 0; i < countryCount; i++) {
+				let sum = 0;
+				for (j = 0; j < roundCount; j++) {
+					sum += massiv[j][i];
+				}
+				result[i] = sum;
+			}
+			return result;
+		}
+		function racersSort(racersInPlay) {						// сортирует массив гонщиков по мере возрастания их временного показателя
+			isSort = false;
+			while (!isSort) {
+				isSort = true;
+				for (let i = 1; i < racersCount; i++) {
+					if (racersInPlay[i].RoundTime < racersInPlay[i - 1].RoundTime) {
+						let save = racersInPlay[i];
+						racersInPlay[i] = racersInPlay[i - 1];
+						racersInPlay[i - 1] = save;
+						isSort = false;
+					}
+				}
+			}
+		}
+		// база имен для генерации
+		let name = 'Alexander Artur Boris Victor Georgy Max Philipp Yan Daniel Michael Ivan Kirill Nikolay Elena Amelia Sophie Lily Zoe Anna Diana Kamilla Kira Margarita Lia Viktoria Anastasia';
+		name = name.split(' ');
+
+		// база имен для генерации
+		let surname = 'Nazarenko Kravitz Dehnich Kucher Johnson Morgun Birch Boolman Cook Vaughan Ryder Gritsenko Kvasnyuk Depp Tankian Benencton Osborne Uzumaki Wulfhard Matarazzo Tarantino Jackson Jenner';
+		surname = surname.split(' ');
+
+		// база гонщиков
+		let au1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let au2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let au3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let au4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let australia = new Country('Australia', au1, au2, au3, au4);
+
+		let ar1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let ar2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let ar3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let ar4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let argentina = new Country('Argentina', ar1, ar2, ar3, ar4);
+
+		let be1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let be2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let be3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let be4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let belgium = new Country('Belgium', be1, be2, be3, be4);
+
+		let br1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let br2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let br3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let br4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let brazil = new Country('Brazil', br1, br2, br3, br4);
+
+		let it1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let it2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let it3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let it4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let italy = new Country('Italy', it1, it2, it3, it4);
+
+		let cn1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let cn2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let cn3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let cn4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let china = new Country('China', cn1, cn2, cn3, cn4);
+
+		let ru1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let ru2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let ru3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let ru4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let russia = new Country('Russia', ru1, ru2, ru3, ru4);
+
+		let th1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let th2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let th3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let th4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let thailand = new Country('Thailand', th1, th2, th3, th4);
+
+		let tr1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let tr2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let tr3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let tr4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let turkey = new Country('Turkey', tr1, tr2, tr3, tr4);
+
+		let fr1 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let fr2 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let fr3 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let fr4 = new Racer(0, randomName(name), randomName(surname), randomRating());
+		let france = new Country('France', fr1, fr2, fr3, fr4);
+
+
+		let allCountry = [australia, argentina, belgium, brazil, italy, china, russia, thailand, turkey, france];
+
+		// проверка на ввод данных отсутствует, тк с ней возможность работоспособности кода вовсе пропадает (строка 259) буду благодарна за подсказку
+		let countryCount = +prompt(`Приветствуем на гоночных соревнованиях!\nВведите количество стран-участниц (от 5 до 10):`);
+
+		let numberSelectedCountry = prompt(`Введите ЧЕРЕЗ ПРОБЕЛ номера стран-участниц:\n0 - по умолчанию    1 - Австралия    2 - Аргентина` +
+			`\n3 - Бельгия                4 - Бразилия      5 - Италия       6 - Китай` +
+			`\n7 - Россия                 8 - Таиланд        9 - Турция       10 - Франция`);
+		numberSelectedCountry = numberSelectedCountry.split(' ');
+		let roundCount = +prompt('Введите количество этапов первого круга (более 1)');
+
+
+		let countriesInPlay = new Array(countryCount);			// массив, содержащий информацию о странах, которые участвуют в гонке
+		if (numberSelectedCountry[0] == '0') {
+			for (let i = 0; i < countryCount; i++) {
+				countriesInPlay[i] = allCountry[i];
+			}
+		} else {
+			for (let i = 0; i < countryCount; i++) {
+				countriesInPlay[i] = allCountry[numberSelectedCountry[i] - 1];
+			}
+		}
+		let racersCount = 4 * countryCount;
+		let racersInPlay = raserPlayList(countriesInPlay);		// заполнение массива гонщиков, учавствующих в соревнованиях
+
+		let n = 0;
+		for (let i = 0; i < countryCount; i++) {				// присваивание номеров каждому из гонщиков, участвующих в гонке
+			countriesInPlay[i].racer1.number = n; n++;
+			countriesInPlay[i].racer2.number = n; n++;
+			countriesInPlay[i].racer3.number = n; n++;
+			countriesInPlay[i].racer4.number = n; n++;
+		}
+
+		let racers_RoundTimes = randomTime(roundCount, racersCount);		// заполнение массива со временем прохождения каждого этапа
+		let Round_RacersTime = [];
+		Round_RacersTime[0] = [];	//сделано намерено, чтобы применить функцию places ниже
+		for (let i = 0; i < racersCount; i++) {
+			let sum = 0;
+			for (let j = 0; j < roundCount; j++) {						// заполнение массива временем прохождения круга
+				sum += racers_RoundTimes[i][j];
+			}
+			Round_RacersTime[0][i] = Math.round(sum * 100) / 100;
+		}
+
+		n = 0;
+		for (let i = 0; i < countryCount; i++) {						// добавление свойства с результатом о времени на первом круге
+			countriesInPlay[i].racer1.RoundTime = Round_RacersTime[0][n]; n++;
+			countriesInPlay[i].racer2.RoundTime = Round_RacersTime[0][n]; n++;
+			countriesInPlay[i].racer3.RoundTime = Round_RacersTime[0][n]; n++;
+			countriesInPlay[i].racer4.RoundTime = Round_RacersTime[0][n]; n++;
+		}
+
+		let countries_RoundTimes = maxTime(racers_RoundTimes, roundCount, countryCount);		// нахождение худших временных результатов в каждой стране
+		let countries_RoundPlaces = places(countries_RoundTimes, roundCount)					// распределение мест на каждом этапе
+		let racers_RoundPlaces = places(Round_RacersTime, 1);									// распределение мест среди гонщиков
+		let countries_placesSum = placesSum(countries_RoundPlaces, countryCount, roundCount);	// суммирование мест для каждой страны
+
+		for (let i = 0; i < racersCount; i++) {
+			racersInPlay[i].RoundPlace = racers_RoundPlaces[0][i];								// добавление свойства с информацие о месте в рейтинке среди гонщиков
+		}
+
+		let bestRacersPlaces = [];																// нахождение в каждой стране лучшего временного результата среди гонщиков
+		let save = [];
+		for (let i = 0; i < countryCount; i++) {
+			let minValue = 0;
+			for (n = 0; n < 4; n++) {
+				save[n] = racers_RoundPlaces[0][n + i * 4];
+			}
+			minValue = min(save);
+			bestRacersPlaces.push(minValue);
+		}
+		for (let i = 0; i < countryCount; i++) {
+			countriesInPlay[i].placesSum_Round = countries_placesSum[i];						//добавление свойств о сумме мест и лучшем гонщике к объектам "country"
+			countriesInPlay[i].bestRacesPlaces = bestRacersPlaces[i];
+		}
+
+		let isSort = false;																// составление рейтинга стран сортировкой пузырьком
+		while (!isSort) {
+			isSort = true;
+			for (let i = 1; i < countryCount; i++) {
+				if (countriesInPlay[i].placesSum_Round < countriesInPlay[i - 1].placesSum_Round || 
+				(countriesInPlay[i].placesSum_Round == countriesInPlay[i - 1].placesSum_Round && countriesInPlay[i].bestRacesPlaces < countriesInPlay[i - 1].bestRacesPlaces)) {
+					let save = countriesInPlay[i];
+					countriesInPlay[i] = countriesInPlay[i - 1];
+					countriesInPlay[i - 1] = save;
+					isSort = false;
+				}
+			}
+		}
+
+		racersSort(racersInPlay);				// составление рейтинга гонщиков
+
+		document.write(`ИТОГИ ПЕРВОГО КРУГА:<br>Итоговый протокол (гонщики):<br><br>`);
+		for (let i = 0; i < racersInPlay.length; i++) {
+			document.write(`${i + 1}. #${racersInPlay[i].number}. ${racersInPlay[i].surname} ${racersInPlay[i].name} ____ Time: ${racersInPlay[i].RoundTime}<br>`);
+		}
+
+		document.write(`<br><br>Итоговый протокол (страны):<br><br>`);
+		for (let i = 0; i < countriesInPlay.length; i++) {
+			document.write(`${i + 1}. ${countriesInPlay[i].name} ____ Places sum: ${countriesInPlay[i].placesSum_Round} ` +
+			`____ Best Racer: ${racersInPlay[countriesInPlay[i].bestRacesPlaces - 1].surname} ${racersInPlay[countriesInPlay[i].bestRacesPlaces - 1].name} ` +
+			`____ Time: ${racersInPlay[countriesInPlay[i].bestRacesPlaces - 1].RoundTime}<br>`);
+		}
+		document.write(`<br>`);
+
+		/////___Второй_круг___/////
+
+
+		while (countriesInPlay.length != 4) {
+			countriesInPlay.pop();
+		}
+		countryCount = 4;
+		racersCount = 4 * countryCount;
+		roundCount = 2;
+		racersInPlay = raserPlayList(countriesInPlay);						// заполнение массива гонщиков, учавствующих в соревнованиях
+		racers_RoundTimes = randomTime(roundCount, racersCount);			// заполнение массива со временем прохождения каждого этапа
+
+		Round_RacersTime = [];
+		Round_RacersTime[0] = [];			//сделано намерено, чтобы применить функцию places ниже
+		for (let i = 0; i < racersCount; i++) {
+			let sum = 0;
+			for (let j = 0; j < roundCount; j++) {
+				sum += racers_RoundTimes[i][j];
+			}
+			Round_RacersTime[0][i] = Math.round(sum * 100) / 100;			// заполнение массива временем прохождения круга
+		}
+
+		n = 0;
+		for (let i = 0; i < countryCount; i++) {						// добавление свойства с результатом о времени на втором круге
+			countriesInPlay[i].racer1.RoundTime = Round_RacersTime[0][n]; n++;
+			countriesInPlay[i].racer2.RoundTime = Round_RacersTime[0][n]; n++;
+			countriesInPlay[i].racer3.RoundTime = Round_RacersTime[0][n]; n++;
+			countriesInPlay[i].racer4.RoundTime = Round_RacersTime[0][n]; n++;
+		}
+
+		countries_RoundTimes = minTime(racers_RoundTimes, roundCount, countryCount);		// нахождение лучших временных результатов в каждой стране
+		countries_RoundPlaces = places(countries_RoundTimes, roundCount);					// распределение мест на каждом этапе
+		racers_RoundPlaces = places(Round_RacersTime, 1);									// распределение мест среди гонщиков
+		countries_placesSum = placesSum(countries_RoundPlaces, countryCount, roundCount);	// суммирование мест для каждой страны
+		for (let i = 0; i < racersCount; i++) {
+			racersInPlay[i].RoundPlace = racers_RoundPlaces[0][i];
+		}
+		for (let i = 0; i < countryCount; i++) {											//добавление свойств о сумме мест к объектам "country"
+			countriesInPlay[i].placesSum_Round = countries_placesSum[i];
+		}
+
+		n = 0;
+		for (let i = 0; i < countryCount; i++) {							// нахождение среднего арифметичесакого значения рейтинга всех гонщиков для каждой страны 
+			let sum = 0;
+			sum += countriesInPlay[i].racer1.rating; n++;
+			sum += countriesInPlay[i].racer2.rating; n++;
+			sum += countriesInPlay[i].racer3.rating; n++;
+			sum += countriesInPlay[i].racer4.rating; n++;
+			countriesInPlay[i].averageRating = sum / 4;
+		}
+
+		isSort = false;				// составление рейтинга стран сортировкой пузырьком
+		while (!isSort) {
+			isSort = true;
+			for (let i = 1; i < countryCount; i++) {
+				if (countriesInPlay[i].placesSum_Round < countriesInPlay[i - 1].placesSum_Round ||
+					(countriesInPlay[i].placesSum_Round == countriesInPlay[i - 1].placesSum_Round && countriesInPlay[i].averageRating > countriesInPlay[i - 1].averageRating)) {
+					let save = countriesInPlay[i];
+					countriesInPlay[i] = countriesInPlay[i - 1];
+					countriesInPlay[i - 1] = save;
+					isSort = false;
+				}
+			}
+		}
+
+		racersSort(racersInPlay);	// составление рейтинга гонщиков
+
+		function startsecondround() {		// функция оторвана от остальных, тк нужна только для клика
+			document.write(`ИТОГИ ВТОРОГО КРУГА:<br>Итоговый протокол (гонщики):<br><br>`);
+			for (let i = 0; i < racersInPlay.length; i++) {
+				document.write(`${i + 1}. #${racersInPlay[i].number}. ${racersInPlay[i].surname} ${racersInPlay[i].name} ____ Time: ${racersInPlay[i].RoundTime}<br>`);
+			}
+
+			document.write(`<br><br>Итоговый протокол (страны):<br><br>`);
+			for (let i = 0; i < countriesInPlay.length; i++) {
+				document.write(`${i + 1}. ${countriesInPlay[i].name} __ Places sum: ${countriesInPlay[i].placesSum_Round} __ Average rating: ${countriesInPlay[i].averageRating}` +
+					`____ Best Racer: ${racersInPlay[countriesInPlay[i].bestRacesPlaces - 1].surname} ${racersInPlay[countriesInPlay[i].bestRacesPlaces - 1].name} <br>`);
+			}
+			setTimeout(() => { alert(`Страна-победительница: ${countriesInPlay[0].name}!🏆`); }, 1000);			// вывод информации о стране-победительнице с задеркой
+		}
+	</script>
+
+<body>
+	<button onclick="startsecondround()">Начать второй круг!</button>
+</body>
+</head>
+
+</html>
